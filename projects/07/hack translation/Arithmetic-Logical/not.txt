@@ -1,0 +1,7 @@
+@SP						\n
+M=M-1	// SP--			\n
+A=M						\n
+M=!M	// *SP= not M	\n
+						\n
+@SP		// SP++			\n
+M=M+1					\n

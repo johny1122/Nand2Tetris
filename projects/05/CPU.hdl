@@ -1,0 +1,79 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/05/CPU.hdl
+
+/**
+ * The Hack CPU (Central Processing unit), consisting of an ALU,
+ * two registers named A and D, and a program counter named PC.
+ * The CPU is designed to fetch and execute instructions written in 
+ * the Hack machine language. In particular, functions as follows:
+ * Executes the inputted instruction according to the Hack machine 
+ * language specification. The D and A in the language specification
+ * refer to CPU-resident registers, while M refers to the external
+ * memory location addressed by A, i.e. to Memory[A]. The inM input 
+ * holds the value of this location. If the current instruction needs 
+ * to write a value to M, the value is placed in outM, the address 
+ * of the target location is placed in the addressM output, and the 
+ * writeM control bit is asserted. (When writeM==0, any value may 
+ * appear in outM). The outM and writeM outputs are combinational: 
+ * they are affected instantaneously by the execution of the current 
+ * instruction. The addressM and pc outputs are clocked: although they 
+ * are affected by the execution of the current instruction, they commit 
+ * to their new values only in the next time step. If reset==1 then the 
+ * CPU jumps to address 0 (i.e. pc is set to 0 in next time step) rather 
+ * than to the address resulting from executing the current instruction. 
+ */
+ CHIP CPU {
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset==1) or continue executing
+                         // the current program (reset==0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write to M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+    PARTS:
+    // Put your code here:
+	
+	// --LEFT chips-- the current instruction
+    
+    // mux in fetch-execute cycle - lecture 5 slide 22. data when executing, instruction when fetching
+    Mux16(a=instruction, b=ALUOut, sel=instruction[15], out=firstMuxOut); // an A-instruction has op-code=0. decide whether a or c instruction
+    Mux(a=true,b=instruction[5],sel=instruction[15],out=loadA); // load to A Register, d1
+	ARegister(in=firstMuxOut, load= loadA, out=ARegOut, out[0..14]=addressM );
+
+	// --MIDDLE chips-- ALU input and program counter
+    And(a=instruction[15],b=instruction[4],out=loadD); // load to D Register, d2
+	DRegister(in= ALUOut,load= loadD,out=DRegOut ); //ALUOut, instruction[4]
+	
+	Mux16(a=ARegOut ,b=inM ,sel=instruction[12] ,out=secondMuxOut );
+	 
+    // should the PC jump, relying on IsNegative, IsZero and j1-j3 bits from instruction. supplys "load" in PC
+    //sends j1,j2,j3 bits to decide about jumping. if the current instruction is an a-instruction send j1 = j2 = j3 =0
+    And(a=instruction[2],b=instruction[15],out=j1);
+    And(a=instruction[1],b=instruction[15],out=j2);
+    And(a=instruction[0],b=instruction[15],out=j3);
+
+    And(a=j1,b= isNeg,out=negJ); // j1 for JLT, JNE, JLE, JMP. all apply for negative numbers.
+    And(a=j2,b= isZero,out=zeroJ); // j2 for JEQ, JGE, JLE, JMP. all apply for zero.
+    Or(a = negJ, b = zeroJ, out = negZeroJ);
+
+    Or(a= isZero, b= isNeg, out= zeroOrNeg);
+    Not(in= zeroOrNeg, out= pos);    
+    And(a= pos, b= j3, out= posJ); // j3 for JGT, JNE, JGE, JMP. all apply for positive numbers.
+
+    Or(a= negZeroJ, b= posJ, out= jumpOut);
+
+	PC(in=ARegOut, load=jumpOut, inc=true, reset=reset ,out[0..14]=pc); // in = jump address, load = should jump, inc = default action
+    
+	// --RIGHT chips-- ALU and writeM
+
+    ALU(x=DRegOut, y=secondMuxOut, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f= instruction[7], no=instruction[6], out=outM, out=ALUOut, zr=isZero, ng=isNeg);
+    	
+	And(a=instruction[15], b=instruction[3], out=writeM); // d3 means write to RAM[A]	
+}

@@ -1,0 +1,57 @@
+CHIP Mul{
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+
+	Mux16(a=false ,b=a ,sel=b[0] ,out=out1 );
+	ShiftLeftLogical(in=a, out=shift0);
+	Mux16(a=false ,b=shift0 ,sel=b[1] ,out=out2 );
+	ShiftLeftLogical(in=shift0, out=shift1);
+	Mux16(a=false ,b=shift1 ,sel=b[2] ,out=out3 );
+	ShiftLeftLogical(in=shift1, out=shift2);
+	Mux16(a=false ,b=shift2 ,sel=b[3] ,out=out4 );
+	ShiftLeftLogical(in=shift2, out=shift3);
+	Mux16(a=false ,b=shift3 ,sel=b[4] ,out=out5 );
+	ShiftLeftLogical(in=shift3, out=shift4);
+	Mux16(a=false ,b=shift4 ,sel=b[5] ,out=out6 );
+	ShiftLeftLogical(in=shift4, out=shift5);
+	Mux16(a=false ,b=shift5 ,sel=b[6] ,out=out7 );
+	ShiftLeftLogical(in=shift5, out=shift6);
+	Mux16(a=false ,b=shift6 ,sel=b[7] ,out=out8 );
+	ShiftLeftLogical(in=shift6, out=shift7);
+	Mux16(a=false ,b=shift7 ,sel=b[8] ,out=out9 );
+	ShiftLeftLogical(in=shift7, out=shift8);
+	Mux16(a=false ,b=shift8 ,sel=b[9] ,out=out10 );
+	ShiftLeftLogical(in=shift8, out=shift9);
+	Mux16(a=false ,b=shift9 ,sel=b[10] ,out=out11 );
+	ShiftLeftLogical(in=shift9, out=shift10);
+	Mux16(a=false ,b=shift10 ,sel=b[11] ,out=out12 );
+	ShiftLeftLogical(in=shift10, out=shift11);
+	Mux16(a=false ,b=shift11 ,sel=b[12] ,out=out13 );
+	ShiftLeftLogical(in=shift11, out=shift12);
+	Mux16(a=false ,b=shift12 ,sel=b[13] ,out=out14 );
+	ShiftLeftLogical(in=shift12, out=shift13);
+	Mux16(a=false ,b=shift13 ,sel=b[14] ,out=out15 );
+	ShiftLeftLogical(in=shift13, out=shift14);
+	Mux16(a=false ,b=shift14 ,sel=b[15] ,out=out16 );
+	
+	Add16(a=out1 ,b=out2 ,out=firstAdd1 );
+	Add16(a=out3 ,b=out4 ,out=firstAdd2 );
+	Add16(a=out5 ,b=out6 ,out=firstAdd3 );
+	Add16(a=out7 ,b=out8 ,out=firstAdd4 );
+	Add16(a=out9 ,b=out10 ,out=firstAdd5 );
+	Add16(a=out11 ,b=out12 ,out=firstAdd6 );
+	Add16(a=out13 ,b=out14 ,out=firstAdd7 );
+	Add16(a=out15 ,b=out16 ,out=firstAdd8 );
+	
+	Add16(a=firstAdd1 ,b=firstAdd2 ,out=secondAdd1 );
+	Add16(a=firstAdd3 ,b=firstAdd4 ,out=secondAdd2 );
+	Add16(a=firstAdd5 ,b=firstAdd6 ,out=secondAdd3 );
+	Add16(a=firstAdd7 ,b=firstAdd8 ,out=secondAdd4 );
+	
+	Add16(a=secondAdd1 ,b=secondAdd2 ,out=thirdAdd1 );
+	Add16(a=secondAdd3 ,b=secondAdd4 ,out=thirdAdd2 );
+	
+	Add16(a=thirdAdd1 ,b=thirdAdd2 ,out=out );
+}

@@ -1,0 +1,16 @@
+D=A     //D=i           \n
+					    \n
+@THAT                   \n
+D=M+D   //D=THAT+i      \n
+                        \n
+@save_address           \n
+M=D                     \n
+                        \n
+@SP 				    \n
+M=M-1   // SP--         \n
+A=M					    \n
+D=M		//D = *SP	    \n
+                        \n
+@save_address           \n
+A=M     //A=THAT+i      \n
+M=D     //*(THAT+i)=*SP \n

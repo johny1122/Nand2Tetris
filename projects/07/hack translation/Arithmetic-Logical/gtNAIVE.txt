@@ -1,0 +1,26 @@
+@SP						    \n
+M=M-1	// SP--			    \n
+A=M						    \n
+D=M		// D=*SP		    \n
+						    \n
+@SP						    \n
+M=M-1	// SP--			    \n
+A=M						    \n
+D=M-D					    \n
+						    \n
+@IF_GREATER*XXX*		    \n
+D;JGT					    \n
+@SP		//if not greater    \n
+A=M						    \n
+M=0		// *SP=false	    \n
+@GOTO_END*XXX*			    \n
+0;JMP					    \n
+						    \n
+(IF_GREATER*XXX*)		    \n
+@SP						    \n
+A=M						    \n
+M=-1	// *SP=true		    \n
+						    \n
+(GOTO_END*XXX*)			    \n
+@SP		// SP++			    \n
+M=M+1					    \n

@@ -1,0 +1,12 @@
+@SP		// D=*SP	\n
+M=M-1	// SP--		\n
+A=M					\n
+D=M					\n
+					\n
+@SP					\n
+M=M-1	// SP--		\n
+A=M					\n
+M=D+M	// *SP=D+M	\n
+					\n
+@SP		// SP++		\n
+M=M+1				\n

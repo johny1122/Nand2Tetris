@@ -1,0 +1,13 @@
+D=A     //D=i        \n
+                     \n
+@LCL                 \n
+D=M+D   //D=THAT+i   \n
+A=D                  \n
+D=M     //D=*(THAT+i)\n
+					 \n
+@SP					 \n
+A=M					 \n
+M=D		//*SP = D	 \n
+					 \n
+@SP		// SP++		 \n
+M=M+1				 \n

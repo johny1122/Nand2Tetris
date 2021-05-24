@@ -1,0 +1,13 @@
+D=A     //D=i       \n
+                    \n
+@ARG                \n
+D=M+D   //D=ARG+i   \n
+A=D                 \n
+D=M     //D=*(ARG+i)\n
+					\n
+@SP					\n
+A=M					\n
+M=D		//*SP = D	\n
+					\n
+@SP		// SP++		\n
+M=M+1				\n

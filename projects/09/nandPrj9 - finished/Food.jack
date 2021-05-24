@@ -1,0 +1,68 @@
+class Food {
+    field int radius;
+    field int value;
+    field Array x;
+    field Array y;
+    field int posCounter;
+
+    constructor Food new(int val) {
+        let radius = 2;
+        let value = val;
+        let x = Array.new(5);
+        let y = Array.new(5);
+        // to create a feeling of random food locations;
+        let posCounter = 0;
+        let x[0] = 200; let y[0] = 70;
+        let x[1] = 120; let y[1] = 120;
+        let x[2] = 170; let y[2] = 70;
+        let x[3] = 350; let y[3] = 100;
+        let x[4] = 250; let y[4] = 180;
+        do drawFood();
+        return this;
+    }
+
+    method void drawFood() {
+        do Screen.setColor(true);
+        do Screen.drawCircle(x[posCounter], y[posCounter], radius);
+        return;
+    }
+
+    method void eraseFood() {
+        do Screen.setColor(false);
+        do Screen.drawCircle(x[posCounter], y[posCounter], radius);
+        if(posCounter < 4) { // 5 different coordinates ordered pairs.
+            let posCounter = posCounter + 1; // food was eaten, get to new location
+        }
+        else {
+            let posCounter = 0;
+        }
+        return;
+    }
+
+    method void dispose(){
+        do eraseFood();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int getX() {
+        return x[posCounter];
+    }
+
+    method int getY() {
+        return y[posCounter];
+    }
+
+    method int radius() {
+        return radius;
+    }
+
+    method int getValue() {
+        return value;
+    }
+
+    method void setValue(int newVal) {
+        let value = newVal;
+        return;
+    }    
+}

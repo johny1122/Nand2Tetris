@@ -1,0 +1,12 @@
+D=A     //D=foo.i           \n
+@save_address               \n
+M=D                         \n
+                            \n
+@SP 				        \n
+M=M-1   //SP--              \n
+A=M					        \n
+D=M		//D = *SP	        \n
+                            \n
+@save_address               \n
+A=M     //A=static(i)       \n
+M=D     //*(static(i))=*SP  \n

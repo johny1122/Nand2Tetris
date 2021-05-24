@@ -1,0 +1,85 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+
+    static Array ram;
+    static int freelist, heap;
+
+    /** Initializes the class. */
+    function void init() {
+        let ram = 0;
+        let heap = 2048;
+        let freelist = heap;    // start address of free
+        let ram[heap] = 0;        // next
+        let ram[heap + 1] = 14336;    // length
+        return;
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+        return ram[address];
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+        let ram[address] = value;
+        return;
+    }
+
+    /** Finds an available RAM block of the given size and returns
+     *  a reference to its base address. */
+    function int alloc(int size) {
+        var int currAddr, currSize, block, remainingSize, prevAddr;
+        var boolean break;
+        let break = false;
+        let currAddr = freelist;
+        let prevAddr = freelist;
+        let block = 0;
+        while ((currAddr > 0) & (~break)){
+            let currSize = ram[currAddr + 1];
+            if (currSize - size - 2 > 0){       // segment.size >= size + 3  => need part of segment
+                if (currAddr = freelist){
+                    let freelist = currAddr + size + 2; //move freelist to next segment
+                }
+                let ram[currAddr + size + 3] = ram[currAddr + 1] - size - 2; // update to new size
+                let ram[currAddr + size + 2] = ram[currAddr];   // update the next of the new beginning segment
+                let block = currAddr + 2;   // block points to the beginning of segment
+                let break = true;
+            }
+            else{
+                if (size + 1 < currSize){   // all of segment is needed
+                    if (currAddr = freelist){   // if need first segment - change freelist to jump over currAddr
+                        let freelist = ram[currAddr];
+                    }
+                    else{ // if need segment in middle - change prevAddr to jump over currAddr
+                        let ram[prevAddr] = ram[currAddr];
+                    }
+                    let block = currAddr + 2;   // block points to the beginning of segment
+                    let break = true;
+                }
+                else{
+                    let prevAddr = currAddr;
+                    let currAddr = ram[currAddr];
+                }
+            }
+        }
+        return block;
+    }
+
+
+    /** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+    function void deAlloc(Array object) {
+        let ram[object - 2] = freelist;  // put object in the beginning of freelist
+        let freelist = object - 2;  // update freelist with the address of object
+        return;
+    }    
+}

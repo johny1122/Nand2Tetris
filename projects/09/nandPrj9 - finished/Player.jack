@@ -1,0 +1,183 @@
+class Player {
+    field int length, maxLength, previousMove, step;
+    field Array body; // vertebrae array
+    
+
+    constructor Player new() {
+        do reset();
+        return this;
+    }
+
+    method void moveLeft() {
+        do handleMove(-step, 0); // update head location
+        let previousMove = 1;
+        return;
+    }
+
+    method void moveUp() {
+        do handleMove(0, -step); // update head location
+        let previousMove = 2;
+        return;
+    }
+
+    method void moveRight() {
+        do handleMove(step, 0); // update head location
+        let previousMove = 3;
+        return;
+    }
+
+    method void moveDown() {
+        do handleMove(0, step); // update head location
+        let previousMove = 4;
+        return;
+    }
+
+    method void handleMove(int dx, int dy) {
+        var Vertebra head, oldHead;
+        var int x, y;
+        let head = body[0];
+        let x = head.getX();
+        let y = head.getY();
+        let oldHead = Vertebra.new(x, y);
+        do eraseTail();
+        do head.moveVertebra(dx, dy); // update head location
+        do updateBodyPositions(oldHead);
+        do drawHead();
+        return;
+    }
+
+    method void previousMove() {
+        if (previousMove = 1) {
+            do moveLeft();
+        }
+        if (previousMove = 2) {
+            do moveUp();
+        }
+        if (previousMove = 3) {
+            do moveRight();
+        }
+        if (previousMove = 4) {
+            do moveDown();
+        }
+        return;
+    }
+
+    
+    method void drawHead() {
+        var Vertebra v;
+        let v = body[0];
+        do v.drawVertebra();
+        return;
+    }
+
+    method void eraseTail() {
+        var Vertebra v;
+        let v = body[length - 1];
+        do v.eraseVertebra();
+        return;
+    }
+
+    method void erasePlayer() {
+        var int i, x, y, r;
+        var Vertebra v;
+        let i = 0;
+        while (i < length) {
+            let v = body[i];
+            let x = v.getX();
+            let y = v.getY();
+            let r = v.getRadius();
+            do Screen.setColor(false);
+            do Screen.drawCircle(x, y, r);
+            let i = i + 1;
+        }
+        return;
+    }
+
+    // not including head
+    method void updateBodyPositions(Vertebra oldHead) {
+        var int i, px, py, cx, cy, dx, dy;
+        var Vertebra cur, prev;
+        let i = length - 1;
+        let prev = body[i]; // to allow later cur = prev, for efficiency.
+        while (i > 0) {
+            let cur = prev;
+            let cx = cur.getX();
+            let cy = cur.getY();
+            if (i = 1) {
+                let prev = oldHead;
+                let px = prev.getX();
+                let py = prev.getY();
+            }
+            else {
+                let prev = body[i-1];
+                let px = prev.getX();
+                let py = prev.getY();
+            }
+            let dx = px - cx;
+            let dy = py - cy;
+            do cur.moveVertebra(dx, dy);
+            let i = i - 1;
+        }
+        return;
+    }
+
+    method void addVertebra() {
+        if (length < maxLength)  {
+            let length = length + 1;
+            // vertebra not drawn, so location is flexible(10,10). do not trigger selfCollision.
+            let body[length - 1] = Vertebra.new(60, 10);
+        }
+        return;
+    }
+
+    method boolean selfCollision() {
+        var int i, headX, headY, curX, curY;
+        var Vertebra v;
+        let i = 1;
+        let v = body[0];
+        let headX = v.getX();
+        let headY = v.getY();
+        while (i < length) {
+            let v = body[i];
+            let curX = v.getX();
+            let curY = v.getY();
+            if ((headX = curX) & (headY = curY)) {
+                return true;
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+
+    method int getX() {
+        var Vertebra head;
+        let head = body[0];
+        return head.getX();
+    }
+
+    method int getY() {
+        var Vertebra head;
+        let head = body[0];
+        return head.getY();
+    }
+
+    method int getLength() {
+        return length;
+    }
+
+    method void dispose(){
+        do erasePlayer();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void reset() {
+        var int i;
+        do erasePlayer();
+        let maxLength = 30; let body = Array.new(maxLength);
+        let length = 1; let body[0] = Vertebra.new(150, 100); // spawn location
+        let step = 5;
+        do drawHead();
+        return;
+    }
+}

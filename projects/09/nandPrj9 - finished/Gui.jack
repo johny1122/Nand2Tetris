@@ -1,0 +1,132 @@
+class Gui{
+    
+    field Array lifeBar;
+    
+    constructor Gui new(){
+        var int i;
+        let i = 0;
+        // lifeBar values - 3 hearts
+        let lifeBar = Array.new(3);
+        while (i < 3){
+            let lifeBar[i] = true;
+            let i = i + 1;
+        }
+        return this;
+    }
+
+    method void decreaseLife(int life){
+        let lifeBar[life - 1] = false; // life is 1/2/3
+        // erase heart
+        do Screen.setColor(false);
+        do Screen.drawRectangle(9*life, 0, 50, 20);
+        do refreshGui(); // re-draw hearts and frame
+        return;
+    }
+
+    method void refreshGui(){
+        var int i, x;
+        let i = 0; // should update according to hit status
+        let x = 0;
+        // life bar hearts
+        while (i < 3){
+            if (lifeBar[i]) {
+                do drawHeart(x);
+            }
+            let i = i + 1;
+            let x = x + 1;
+        }
+        // field frame
+        do Screen.setColor(true);
+        do Screen.drawLine(100, 50, 100, 200);
+        do Screen.drawLine(100, 50, 400, 50);
+        do Screen.drawLine(400, 200, 400, 50);
+        do Screen.drawLine(400, 200, 100, 200);
+        return;
+    }
+
+    method void dispose(){
+        do Screen.clearScreen();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void printScore(int score){
+        do Output.moveCursor(0,55);
+        do Output.printString("score: ");
+        do Output.moveCursor(0,61);
+        do Output.printInt(score);
+        return;
+    }
+
+    method void mainMenu(){
+        //draws the game's main menu.
+        var int cx,cy;
+        var char eKey;
+        let cx = 260;
+        let cy = 100;
+        let eKey = 0; // ???
+        
+        do snakeLogo();
+        do Output.moveCursor(3,30); // Snake word location
+        do Output.printString("Snake");
+        do Output.moveCursor(11,20); // start instructions location
+        do Output.printString("Press any Key to start a new game");
+        
+        while (eKey = 0){
+            let eKey = Keyboard.keyPressed();
+        }
+        do Screen.clearScreen();
+        return;
+    }
+
+    method void snakeLogo() {
+        var int memAddress, indentX, indentY;
+        // snake head, using supplemented bit-map editor
+        let indentX = 15 + 4;
+        let indentY = 2240 + 256;
+        let memAddress = 16384 + indentX + indentY;
+        do Memory.poke(memAddress + 0, 0);
+        do Memory.poke(memAddress + 32, 0);
+        do Memory.poke(memAddress + 64, 0);
+        do Memory.poke(memAddress + 96, 48);
+        do Memory.poke(memAddress + 128, 252);
+        do Memory.poke(memAddress + 160, 2030);
+        do Memory.poke(memAddress + 192, -28673);
+        do Memory.poke(memAddress + 224, 32767);
+        do Memory.poke(memAddress + 256, -28673);
+        do Memory.poke(memAddress + 288, 2030);
+        do Memory.poke(memAddress + 320, 252);
+        do Memory.poke(memAddress + 352, 48);
+        do Memory.poke(memAddress + 384, 0);
+        do Memory.poke(memAddress + 416, 0);
+        do Memory.poke(memAddress + 448, 0);
+        do Memory.poke(memAddress + 480, 0);
+        //snake body
+        do Screen.setColor(true);
+        do Screen.drawRectangle(200, 84, 305, 87); // upleft, downright
+        do Screen.drawRectangle(192, 85, 200, 86); // upleft, downright
+        return;
+    }
+    // heart-shape sprite, using supplemented bit-map editor
+    method void drawHeart(int location) {
+        var int memAddress;
+        let memAddress = 16384 + location;
+        do Memory.poke(memAddress + 0, 0);
+        do Memory.poke(memAddress + 32, 0);
+        do Memory.poke(memAddress + 64, 7280);
+        do Memory.poke(memAddress + 96, 16120);
+        do Memory.poke(memAddress + 128, 32764);
+        do Memory.poke(memAddress + 160, 32764);
+        do Memory.poke(memAddress + 192, 32764);
+        do Memory.poke(memAddress + 224, 16376);
+        do Memory.poke(memAddress + 256, 8176);
+        do Memory.poke(memAddress + 288, 4064);
+        do Memory.poke(memAddress + 320, 1984);
+        do Memory.poke(memAddress + 352, 896);
+        do Memory.poke(memAddress + 384, 256);
+        do Memory.poke(memAddress + 416, 0);
+        do Memory.poke(memAddress + 448, 0);
+        do Memory.poke(memAddress + 480, 0);
+        return;
+    }
+}

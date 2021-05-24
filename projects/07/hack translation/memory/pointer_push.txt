@@ -1,0 +1,21 @@
+D=A     //D=0/1         \n
+                        \n
+@IF_THIS*XXX*           \n
+D;JEQ                   \n
+                        \n
+@THAT   //if that (1)   \n
+D=M                     \n
+@END*XXX*               \n
+0;JMP                   \n
+					    \n
+(IF_THIS*XXX*)   // (0) \n
+@THIS                   \n
+D=M                     \n
+                        \n
+(END*XXX*)              \n
+@SP					    \n
+A=M					    \n
+M=D		//*SP = D	    \n
+					    \n
+@SP		// SP++		    \n
+M=M+1				    \n

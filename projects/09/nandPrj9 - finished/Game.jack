@@ -1,0 +1,149 @@
+class Game{
+    field int score;
+    field int life;
+    field int speed;
+    field Player player;
+    field Food food;
+    field Gui gui;
+    static int waitTime;
+    
+
+    constructor Game new(){
+        let waitTime = 100;
+        let gui = Gui.new();
+        do gui.mainMenu();
+        do restartGame();
+        return this;
+    }
+
+    method void handleMovement(){
+        var char key;
+        var char prevoiusMove;
+        let key = Keyboard.keyPressed();
+
+        if (key = 130){
+            do player.moveLeft();
+            let prevoiusMove = key;
+        }
+        if (key = 131){
+            do player.moveUp();
+            let prevoiusMove = key;
+        }
+        if (key = 132) {
+            do player.moveRight();
+            let prevoiusMove = key;
+        }
+        if (key = 133){
+            do player.moveDown();
+            let prevoiusMove = key;
+        }
+        else {
+            do player.previousMove();
+        }
+        return;
+    }
+
+    method void foodEncounter(){
+        var int px, py, fx, fy, dx, dy, dist;
+        let px = player.getX(); let fx = food.getX(); let dx = px - fx;
+        let py = player.getY(); let fy = food.getY(); let dy = py - fy;
+        // large positive numbers become negative
+        if (Math.multiply(dx, dx) + Math.multiply(dy, dy) > 0) {
+            let dist = Math.sqrt(Math.multiply(dx, dx) + Math.multiply(dy, dy));
+        } 
+        else { 
+            let dist = 11;
+        }
+        //if food eaten - plant new food, update score, raise difficulty level.
+        if (dist < 11) { 
+            do food.eraseFood();
+            do food.setValue(food.getValue() + 1); // increase food value
+            do food.drawFood();
+
+            let score = score + food.getValue();
+
+            do player.addVertebra();
+            do player.addVertebra();
+            do player.addVertebra();
+            do increaseSpeed();
+        }
+        return;
+    }
+
+    method void handleCollision() {
+        var boolean wallCollision, selfCollision;
+        let wallCollision = (player.getX() < 102) | (player.getX() > 398) | (player.getY() < 52) | (player.getY() > 198);
+        let selfCollision = player.selfCollision();
+        //if player hurt - decrease life, reset player and difficulty level.
+        if (wallCollision | selfCollision) {
+            do gui.decreaseLife(life);
+            do food.drawFood();
+            do player.reset();
+            do food.setValue(1);
+            let speed = 0;
+            let life = life -1;
+        }
+        return;
+    }
+
+    method void increaseSpeed(){
+        let speed = speed + 5;
+        if (~(speed < waitTime)) {
+            let speed = waitTime - 5;
+        }
+        return;
+    }
+
+    method void run(){
+        var boolean dead;
+        var int restart;
+        let dead = false;
+        while (~dead){
+            do Sys.wait(waitTime - speed);
+            do gui.printScore(score);
+            do handleMovement();
+            do handleCollision();
+            do foodEncounter();
+            if (life = 0){
+                let dead = true;
+            }
+        }
+        // play again or exit
+        do Screen.clearScreen();
+        do Output.moveCursor(11,11);
+        do Output.printString("Press Esc to exit, any other key to restart");
+        let restart = 0;
+        while (restart = 0){    
+            let restart = Keyboard.keyPressed(); 
+        }
+        if (restart = 140){
+            return;
+        }
+        do Screen.clearScreen();
+        do restartGame();
+        return;
+    }
+
+    
+
+    method void dispose(){
+        do player.dispose();
+        do food.dispose();
+        do gui.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void restartGame(){
+        do Sys.wait(10);
+        let gui = Gui.new();
+        let score = 0;
+        let life = 3;
+        let speed = 0;
+        let player = Player.new();
+        let food = Food.new(1); // param = food value
+        do gui.refreshGui();
+        do run();
+        return;
+    }
+}

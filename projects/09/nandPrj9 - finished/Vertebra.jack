@@ -1,0 +1,47 @@
+class Vertebra {
+    field int radius;
+    field int x, y;
+
+    constructor Vertebra new(int xLoc, int yLoc) {
+        let radius = 2;
+        let x = xLoc;
+        let y = yLoc;
+        return this;
+    }
+
+    method void moveVertebra(int dx, int dy) {
+        let x = x + dx;
+        let y = y + dy;
+        return;
+    }
+
+    method void drawVertebra() {
+        do Screen.setColor(true);
+        do Screen.drawCircle(x, y, radius);
+        return;
+    }
+
+    method void eraseVertebra() {
+        do Screen.setColor(false);
+        do Screen.drawCircle(x, y, radius);
+        return;
+    }
+
+    method void dispose(){
+        do eraseVertebra();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int getRadius() {
+        return radius;
+    }
+
+    method int getX() {
+        return x;
+    }
+
+    method int getY() {
+        return y;
+    }
+}

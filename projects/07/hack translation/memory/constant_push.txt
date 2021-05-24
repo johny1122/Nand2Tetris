@@ -1,0 +1,8 @@
+D=A		//D = i		\n
+					\n
+@SP					\n
+A=M					\n
+M=D		//*SP = i	\n
+					\n
+@SP		// SP++		\n
+M=M+1				\n

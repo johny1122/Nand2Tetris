@@ -1,0 +1,76 @@
+@SP						    					\n
+M=M-1	// SP--			   						\n
+A=M						    					\n
+D=M		// D=*SP (y)	    					\n
+												\n
+@y												\n
+M=D												\n
+												\n
+@SP						    					\n
+M=M-1	// SP--			    					\n
+A=M						    					\n
+D=M		// D=*SP (x)	    					\n
+												\n
+@x												\n
+M=D												\n
+												\n
+@IF_X_POSITIVE*XXX*	//x>0						\n
+D;JGT											\n
+@IF_X_NEGATIVE_OR_ZERO*XXX*	//x<=0				\n
+0;JMP											\n
+												\n
+												\n
+(IF_X_POSITIVE*XXX*)							\n
+@y												\n
+D=M												\n
+												\n
+@IF_X_AND_Y_POS*XXX*		//x&y>0				\n
+D;JGT	//y>0									\n
+												\n
+@IF_TRUE*XXX*	//x>0 & y<=0					\n
+0;JMP											\n
+												\n
+(IF_X_AND_Y_POS*XXX*)							\n
+@x												\n
+D=M												\n
+@y												\n
+D=M-D	//D=y-x									\n
+@IF_FALSE*XXX*	//y-x>=0 == x<=y				\n
+D;JGE											\n
+@IF_TRUE*XXX*	//y-x<0 == x>y					\n
+0;JMP											\n
+												\n
+(IF_X_NEGATIVE_OR_ZERO*XXX*)					\n
+@y												\n
+D=M												\n
+@IF_X_AND_Y_ARE_NEG_OR_ZERO*XXX*	//x&y<=0	\n
+D;JLE	//y<=0									\n
+												\n
+@IF_FALSE*XXX*	//x<=0 & y>0					\n
+0;JMP											\n
+												\n
+(IF_X_AND_Y_ARE_NEG_OR_ZERO*XXX*)				\n
+@x												\n
+D=M												\n
+@y												\n
+D=M-D	//D=y-x									\n
+@IF_TRUE*XXX*	//y-x<0 == y<x					\n
+D;JLT											\n
+@IF_FALSE*XXX*	//y-x>=0 == y>=x				\n
+0;JMP											\n
+												\n
+(IF_TRUE*XXX*)		//if x>y					\n
+@SP		   										\n
+A=M						    					\n
+M=-1			// *SP=true						\n
+@GOTO_END*XXX*			    					\n
+0;JMP											\n
+												\n
+(IF_FALSE*XXX*)		//if x<=y					\n
+@SP		   										\n
+A=M						    					\n
+M=0				// *SP=false					\n
+												\n
+(GOTO_END*XXX*)			    					\n
+@SP		// SP++			    					\n
+M=M+1					    					\n

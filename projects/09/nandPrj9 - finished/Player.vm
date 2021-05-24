@@ -1,0 +1,446 @@
+function Player.new 0
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push pointer 0
+call Player.reset 1
+pop temp 0
+push pointer 0
+return
+function Player.moveLeft 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 3
+neg
+push constant 0
+call Player.handleMove 3
+pop temp 0
+push constant 1
+pop this 2
+push constant 0
+return
+function Player.moveUp 0
+push argument 0
+pop pointer 0
+push pointer 0
+push constant 0
+push this 3
+neg
+call Player.handleMove 3
+pop temp 0
+push constant 2
+pop this 2
+push constant 0
+return
+function Player.moveRight 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 3
+push constant 0
+call Player.handleMove 3
+pop temp 0
+push constant 3
+pop this 2
+push constant 0
+return
+function Player.moveDown 0
+push argument 0
+pop pointer 0
+push pointer 0
+push constant 0
+push this 3
+call Player.handleMove 3
+pop temp 0
+push constant 4
+pop this 2
+push constant 0
+return
+function Player.handleMove 4
+push argument 0
+pop pointer 0
+push constant 0
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Vertebra.getX 1
+pop local 2
+push local 0
+call Vertebra.getY 1
+pop local 3
+push local 2
+push local 3
+call Vertebra.new 2
+pop local 1
+push pointer 0
+call Player.eraseTail 1
+pop temp 0
+push local 0
+push argument 1
+push argument 2
+call Vertebra.moveVertebra 3
+pop temp 0
+push pointer 0
+push local 1
+call Player.updateBodyPositions 2
+pop temp 0
+push pointer 0
+call Player.drawHead 1
+pop temp 0
+push constant 0
+return
+function Player.previousMove 0
+push argument 0
+pop pointer 0
+push this 2
+push constant 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Player.moveLeft 1
+pop temp 0
+label IF_FALSE0
+push this 2
+push constant 2
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push pointer 0
+call Player.moveUp 1
+pop temp 0
+label IF_FALSE1
+push this 2
+push constant 3
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push pointer 0
+call Player.moveRight 1
+pop temp 0
+label IF_FALSE2
+push this 2
+push constant 4
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push pointer 0
+call Player.moveDown 1
+pop temp 0
+label IF_FALSE3
+push constant 0
+return
+function Player.drawHead 1
+push argument 0
+pop pointer 0
+push constant 0
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Vertebra.drawVertebra 1
+pop temp 0
+push constant 0
+return
+function Player.eraseTail 1
+push argument 0
+pop pointer 0
+push this 0
+push constant 1
+sub
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Vertebra.eraseVertebra 1
+pop temp 0
+push constant 0
+return
+function Player.erasePlayer 5
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 0
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 4
+push local 4
+call Vertebra.getX 1
+pop local 1
+push local 4
+call Vertebra.getY 1
+pop local 2
+push local 4
+call Vertebra.getRadius 1
+pop local 3
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push local 1
+push local 2
+push local 3
+call Screen.drawCircle 3
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Player.updateBodyPositions 9
+push argument 0
+pop pointer 0
+push this 0
+push constant 1
+sub
+pop local 0
+push local 0
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 8
+label WHILE_EXP0
+push local 0
+push constant 0
+gt
+not
+if-goto WHILE_END0
+push local 8
+pop local 7
+push local 7
+call Vertebra.getX 1
+pop local 3
+push local 7
+call Vertebra.getY 1
+pop local 4
+push local 0
+push constant 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+pop local 8
+push local 8
+call Vertebra.getX 1
+pop local 1
+push local 8
+call Vertebra.getY 1
+pop local 2
+goto IF_END0
+label IF_FALSE0
+push local 0
+push constant 1
+sub
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 8
+push local 8
+call Vertebra.getX 1
+pop local 1
+push local 8
+call Vertebra.getY 1
+pop local 2
+label IF_END0
+push local 1
+push local 3
+sub
+pop local 5
+push local 2
+push local 4
+sub
+pop local 6
+push local 7
+push local 5
+push local 6
+call Vertebra.moveVertebra 3
+pop temp 0
+push local 0
+push constant 1
+sub
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Player.addVertebra 0
+push argument 0
+pop pointer 0
+push this 0
+push this 1
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 0
+push constant 1
+add
+pop this 0
+push this 0
+push constant 1
+sub
+push this 4
+add
+push constant 60
+push constant 10
+call Vertebra.new 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+label IF_FALSE0
+push constant 0
+return
+function Player.selfCollision 6
+push argument 0
+pop pointer 0
+push constant 1
+pop local 0
+push constant 0
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 5
+push local 5
+call Vertebra.getX 1
+pop local 1
+push local 5
+call Vertebra.getY 1
+pop local 2
+label WHILE_EXP0
+push local 0
+push this 0
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 5
+push local 5
+call Vertebra.getX 1
+pop local 3
+push local 5
+call Vertebra.getY 1
+pop local 4
+push local 1
+push local 3
+eq
+push local 2
+push local 4
+eq
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+label IF_FALSE0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Player.getX 1
+push argument 0
+pop pointer 0
+push constant 0
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Vertebra.getX 1
+return
+function Player.getY 1
+push argument 0
+pop pointer 0
+push constant 0
+push this 4
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Vertebra.getY 1
+return
+function Player.getLength 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Player.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Player.erasePlayer 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Player.reset 1
+push argument 0
+pop pointer 0
+push pointer 0
+call Player.erasePlayer 1
+pop temp 0
+push constant 30
+pop this 1
+push this 1
+call Array.new 1
+pop this 4
+push constant 1
+pop this 0
+push constant 0
+push this 4
+add
+push constant 150
+push constant 100
+call Vertebra.new 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 5
+pop this 3
+push pointer 0
+call Player.drawHead 1
+pop temp 0
+push constant 0
+return
